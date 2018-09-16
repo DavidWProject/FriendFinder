@@ -1,37 +1,54 @@
-// Require dependencies
-var http = require("http");
-var fs = require("fs");
+// Dependencies
+// =============================================================
+var express = require("express");
+var bodyParser = require("body-parser");
+var path = require("path");
+// var http = require("http");
+// var fs = require("fs");
 
 // Set our port to 8080
+var app = express();
 var PORT = process.env.PORT || 8080;
 
-var server = http.createServer(handleRequest);
+// Sets up the Express app to handle data parsing
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-function handleRequest(req, res) {
+// var server = http.createServer(handleRequest);
 
-  // Capture the url the request is made to
-  var path = req.url;
+// function handleRequest(req, res) {
 
-  // When we visit different urls, call the function with different arguments
-  switch (path) {
+//   // Capture the url the request is made to
+//   var path = req.url;
 
-  case "/survey":
-    return renderHTML(path + ".html", res);
+//   // When we visit different urls, call the function with different arguments
+//   switch (path) {
 
-  default:
-    return renderHTML("/index.html", res);
-  }
-}
+//   case "/survey":
+//     return renderHTML(path + ".html", res);
 
-// function to take a filepath and respond with html
-function renderHTML(filePath, res) {
-  return fs.readFile(__dirname + filePath, function(err, data) {
-    res.writeHead(200, { "Content-Type": "text/html" });
-    res.end(data);
-  });
-}
+//   default:
+//     return renderHTML("/index.html", res);
+//   }
+// }
 
-// Starts our server.
-server.listen(PORT, function() {
-  console.log("Server is listening on PORT: " + PORT);
+// // function to take a filepath and respond with html
+// function renderHTML(filePath, res) {
+//   return fs.readFile(__dirname + filePath, function(err, data) {
+//     res.writeHead(200, { "Content-Type": "text/html" });
+//     res.end(data);
+//   });
+// }
+
+//ROUTER
+require('./apiRoutes.js')(app); 
+require('./htmlRoutes.js')(app);
+
+// // Starts our server.
+// server.listen(PORT, function() {
+//   console.log("Server is listening on PORT: " + PORT);
+// });
+
+app.listen(PORT, function () {
+  console.log('App listening on PORT: ' + PORT);
 });
